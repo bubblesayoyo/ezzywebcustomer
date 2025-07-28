@@ -1,9 +1,13 @@
-export default function handler(req, res) {
-  const data = req.body;
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  const data = req.body || {};
 
   if (data.Customer && !data.Customer.endsWith(" Webstores")) {
     data.Customer += " Webstores";
   }
 
-  res.status(200).json(data);
+  return res.status(200).json(data);
 }
