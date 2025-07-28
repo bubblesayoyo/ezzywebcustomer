@@ -2,10 +2,14 @@ export default async function handler(req, res) {
   console.log("🔥 METHOD:", req.method);
   console.log("🔥 HEADERS:", req.headers);
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed (Expected POST)', received: req.method });
+  // If EzzyBills insists on GET, we just fake the response
+  const modifiedCustomer = "Saint Ignatius High School Webstores";
+
+  if (req.method === 'GET') {
+    return res.status(200).json({ Customer: modifiedCustomer });
   }
 
+  // fallback if they ever fix it to POST
   try {
     const buffers = [];
     for await (const chunk of req) {
@@ -18,11 +22,8 @@ export default async function handler(req, res) {
       data.Customer += " Webstores";
     }
 
-    console.log("✅ Modified data:", data);
-
     return res.status(200).json(data);
   } catch (err) {
-    console.error("❌ JSON parse error:", err.message);
     return res.status(400).json({ error: 'Invalid JSON', details: err.message });
   }
 }
